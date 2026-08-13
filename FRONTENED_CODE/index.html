@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted HMS Adoption Readiness Predictor</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark">AI</span>
+        <span class="brand-text">HMS Adoption Readiness Predictor</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <h1>AI-Assisted HMS Adoption Readiness Predictor</h1>
+      <p class="subtitle">Estimate AI adoption readiness based on healthcare worker and hospital-related factors.</p>
+    </section>
+
+    <section class="disclaimer">
+      <strong>Research prototype:</strong> This prediction system uses a synthetic dataset.
+      Predictions demonstrate the machine-learning workflow and should not be interpreted as
+      evidence of real-world predictive performance among Bangladeshi healthcare workers or hospitals.
+    </section>
+
+    <section class="card form-card">
+      <h2>Respondent Information</h2>
+      <form id="predict-form" novalidate>
+
+        <div class="form-grid">
+
+          <div class="field">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" min="18" max="100" placeholder="e.g. 34" required>
+          </div>
+
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="" disabled selected>Select gender</option>
+              {% for v in valid_categories['gender'] %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="profession">Profession</label>
+            <select id="profession" name="profession" required>
+              <option value="" disabled selected>Select profession</option>
+              {% for v in valid_categories['profession'] %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="education_level">Education Level</label>
+            <select id="education_level" name="education_level" required>
+              <option value="" disabled selected>Select education level</option>
+              {% for v in valid_categories['education_level'] %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="years_of_experience">Years of Experience</label>
+            <input type="number" id="years_of_experience" name="years_of_experience" min="0" max="50" placeholder="e.g. 6" required>
+          </div>
+
+          <div class="field">
+            <label for="hospital_type">Hospital Type</label>
+            <select id="hospital_type" name="hospital_type" required>
+              <option value="" disabled selected>Select hospital type</option>
+              {% for v in valid_categories['hospital_type'] %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="hospital_location">Hospital Location</label>
+            <select id="hospital_location" name="hospital_location" required>
+              <option value="" disabled selected>Select hospital location</option>
+              {% for v in valid_categories['hospital_location'] %}
+              <option value="{{ v }}">{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+        </div>
+
+        <h3 class="section-title">Perception Scores <span class="scale-hint">(1 = Lowest, 5 = Highest)</span></h3>
+
+        <div class="form-grid">
+
+          <div class="field">
+            <label for="ai_awareness_score">AI Awareness Score</label>
+            <select id="ai_awareness_score" name="ai_awareness_score" required>
+              <option value="" disabled selected>Select score</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option>
+            </select>
+            <p class="hint">How familiar the respondent is with AI concepts and AI-assisted HMS tools.</p>
+          </div>
+
+          <div class="field">
+            <label for="privacy_score">Privacy Score</label>
+            <select id="privacy_score" name="privacy_score" required>
+              <option value="" disabled selected>Select score</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option>
+            </select>
+            <p class="hint">Level of concern about data privacy and confidentiality risks (higher = more concerned).</p>
+          </div>
+
+          <div class="field">
+            <label for="human_factor_score">Human Factor Score</label>
+            <select id="human_factor_score" name="human_factor_score" required>
+              <option value="" disabled selected>Select score</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option>
+            </select>
+            <p class="hint">Concerns about workload, trust, training and human resistance to AI tools (higher = more concerned).</p>
+          </div>
+
+          <div class="field">
+            <label for="infrastructure_score">Infrastructure Score</label>
+            <select id="infrastructure_score" name="infrastructure_score" required>
+              <option value="" disabled selected>Select score</option>
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option>
+            </select>
+            <p class="hint">Perceived quality of hospital IT infrastructure (internet, hardware, systems).</p>
+          </div>
+
+        </div>
+
+        <div id="form-errors" class="form-errors" hidden></div>
+
+        <div class="form-actions">
+          <button type="submit" id="predict-btn" class="btn btn-primary">Predict Readiness</button>
+          <button type="button" id="reset-btn" class="btn btn-secondary">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="result-card" class="card result-card" hidden>
+      <h2>Prediction Result</h2>
+      <div id="result-content"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Predicting AI-Assisted Hospital Management System Adoption Readiness in Bangladesh</p>
+      <p class="footer-sub">A Survey-Based Machine Learning Approach to Identify Privacy, Human and Infrastructure Barriers</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
